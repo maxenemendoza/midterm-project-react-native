@@ -1,33 +1,22 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// components/JobCard.tsx
-// Displays a single job listing with save / remove and apply actions.
-//
-// Props:
-//   job        – the Job to render
-//   onApply    – called when the Apply button is pressed
-//   showRemove – when true, shows a Remove button instead of the Save button
-//   onRemove   – called with the job id when Remove is pressed
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, Image, Alert } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { Job, ThemeColors } from '../types';
 import { useTheme } from '../context/ThemeContext';
 import { useJobs } from '../context/JobsContext';
 import { styles } from '../styles/JobCard.styles';
 import { stripHtml } from '../utils/stripHtml';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// props
 interface JobCardProps {
   job:          Job;
   onApply:      (job: Job) => void;
   showRemove?:  boolean;
   onRemove?:    (jobId: string) => void;
+  onPress?:     (job: Job) => void;
 }
 
-// ─── Sub-component: Tag pill ──────────────────────────────────────────────────
-
+// sub-component: tag pill
 interface TagProps {
   icon:   string;
   label:  string;
@@ -44,7 +33,12 @@ const Tag = ({ icon, label, colors }: TagProps) => (
       },
     ]}
   >
-    <Text style={styles.tagIcon}>{icon}</Text>
+    <Feather
+      name={icon as any}
+      size={12}
+      color={colors.textSecondary}
+      style={styles.tagIcon}
+    />
     <Text
       style={[styles.tagLabel, { color: colors.textSecondary }]}
       numberOfLines={1}
@@ -54,25 +48,22 @@ const Tag = ({ icon, label, colors }: TagProps) => (
   </View>
 );
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
-const JobCard = ({
-  job,
-  onApply,
-  showRemove = false,
-  onRemove,
+// main component 
+const JobCard = ({ job, onApply,  showRemove = false, onRemove, onPress,
 }: JobCardProps) => {
   const { colors } = useTheme();
-  const { saveJob, isJobSaved } = useJobs();
+  const { saveJob, isJobSaved, isJobApplied, clearJobApplication } = useJobs();
 
   const saved = isJobSaved(job.id);
+  const applied = isJobApplied(job.id);
 
   const handleSave = () => {
     if (!saved) saveJob(job);
   };
 
   return (
-    <View
+    <Pressable
+      onPress={onPress ? () => onPress(job) : undefined}
       style={[
         styles.card,
         {
@@ -82,14 +73,22 @@ const JobCard = ({
         },
       ]}
     >
-      {/* ── Header ───────────────────────────────────────────────────────── */}
+      {/* header */}
       <View style={styles.header}>
         <View style={styles.avatarWrapper}>
-          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-            <Text style={styles.avatarText}>
-              {job.companyName.charAt(0).toUpperCase()}
-            </Text>
-          </View>
+          {job.logoUrl ? (
+            <Image
+              source={{ uri: job.logoUrl }}
+              style={styles.companyLogo}
+              resizeMode="contain"
+            />
+          ) : (
+            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+              <Text style={styles.avatarText}>
+                {job.companyName.charAt(0).toUpperCase()}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.headerInfo}>
@@ -105,35 +104,60 @@ const JobCard = ({
         </View>
       </View>
 
-      {/* ── Tags ─────────────────────────────────────────────────────────── */}
+      {/* tags */}
       <View style={styles.tags}>
-        <Tag icon="📍" label={job.location} colors={colors} />
-        <Tag icon="💼" label={job.jobType}  colors={colors} />
-        {job.remote && <Tag icon="🏠" label="Remote" colors={colors} />}
-        {job.category && <Tag icon="🏷" label={job.category} colors={colors} />}
+        <Tag icon="map-pin" label={job.location} colors={colors} />
+        <Tag icon="briefcase" label={job.jobType}  colors={colors} />
+        {job.remote && <Tag icon="home" label="Remote" colors={colors} />}
+        {job.category && <Tag icon="tag" label={job.category} colors={colors} />}
       </View>
 
-      {/* ── Salary ───────────────────────────────────────────────────────── */}
+      {/* salary */}
       <View style={[styles.salaryBand, { backgroundColor: colors.secondary }]}>
-        <Text style={styles.salaryIcon}>💰</Text>
         <Text style={[styles.salaryText, { color: colors.primary }]}>
           {job.salary}
         </Text>
       </View>
 
-      {/* ── Description preview ──────────────────────────────────────────── */}
-      <Text
-        style={[styles.description, { color: colors.textSecondary }]}
-        numberOfLines={2}
-      >
-        {stripHtml(job.description)}
-      </Text>
-
-      {/* ── Action buttons ───────────────────────────────────────────────── */}
+      {/* action buttons */}
       <View style={styles.actions}>
-        {showRemove ? (
-          /* Remove button — shown on the Saved Jobs screen */
-          <TouchableOpacity
+        {applied ? (
+          <Pressable
+            style={[
+              styles.btn,
+              {
+                backgroundColor: colors.secondary,
+                borderColor:     colors.primary,
+              },
+            ]}
+            onPress={() =>
+              Alert.alert(
+                'Cancel application?',
+                `Do you want to cancel your application for “${job.title}”?`,
+                [
+                  { text: 'Keep', style: 'cancel' },
+                  {
+                    text: 'Cancel application',
+                    style: 'destructive',
+                    onPress: () => clearJobApplication(job.id),
+                  },
+                ]
+              )
+            }
+            accessibilityLabel={`Cancel application for ${job.title}`}
+          >
+            <Text
+              style={[
+                styles.btnText,
+                { color: colors.primary },
+              ]}
+            >
+              Cancel application
+            </Text>
+          </Pressable>
+        ) : showRemove ? (
+          /* remove button — shown on the Saved Jobs screen */
+          <Pressable
             style={[
               styles.btn,
               {
@@ -143,15 +167,14 @@ const JobCard = ({
             ]}
             onPress={() => onRemove?.(job.id)}
             accessibilityLabel={`Remove ${job.title} from saved jobs`}
-            activeOpacity={0.8}
           >
             <Text style={[styles.btnText, { color: colors.dangerText }]}>
-              🗑  Remove
+              Remove
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         ) : (
-          /* Save button — shown on the Job Finder screen */
-          <TouchableOpacity
+          /* save button — shown on the Job Finder screen */
+          <Pressable
             style={[
               styles.btn,
               {
@@ -162,7 +185,6 @@ const JobCard = ({
             onPress={handleSave}
             disabled={saved}
             accessibilityLabel={saved ? `${job.title} already saved` : `Save ${job.title}`}
-            activeOpacity={0.8}
           >
             <Text
               style={[
@@ -170,30 +192,39 @@ const JobCard = ({
                 { color: saved ? '#FFFFFF' : colors.primary },
               ]}
             >
-              {saved ? '✓  Saved' : '🔖  Save Job'}
+              {saved ? 'Saved' : 'Save Job'}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
 
-        {/* Apply button — always visible */}
-        <TouchableOpacity
+        {/* apply button */}
+        <Pressable
           style={[
             styles.btn,
             {
-              backgroundColor: colors.primary,
-              borderColor:     colors.primary,
+              backgroundColor: applied ? colors.surface : colors.primary,
+              borderColor:     applied ? colors.border : colors.primary,
             },
           ]}
-          onPress={() => onApply(job)}
-          accessibilityLabel={`Apply for ${job.title}`}
-          activeOpacity={0.8}
+          onPress={() => {
+            if (!applied) onApply(job);
+          }}
+          disabled={applied}
+          accessibilityLabel={
+            applied ? `${job.title} already applied` : `Apply for ${job.title}`
+          }
         >
-          <Text style={[styles.btnText, { color: colors.primaryText }]}>
-            📝  Apply
+          <Text
+            style={[
+              styles.btnText,
+              { color: applied ? colors.textMuted : colors.primaryText },
+            ]}
+          >
+            {applied ? 'Applied' : 'Apply'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

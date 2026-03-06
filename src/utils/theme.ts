@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// utils/theme.ts
-// Defines the light and dark colour palettes used by ThemeContext.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { ThemeColors } from '../types';
 
 export const lightColors: ThemeColors = {

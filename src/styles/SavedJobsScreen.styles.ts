@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// styles/SavedJobsScreen.styles.ts
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -9,13 +5,13 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // ── Header bar ──────────────────────────────────────────────────────────
+  // header 
   headerBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 10,
     borderBottomWidth: 1,
   },
   headerTitle: {
@@ -25,10 +21,10 @@ export const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 4,
   },
 
-  // ── Scrollable content area ─────────────────────────────────────────────
+  // scrollable content area
   content: {
     flex: 1,
     paddingHorizontal: 16,

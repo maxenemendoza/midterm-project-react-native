@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// context/ThemeContext.tsx
-// Provides dark / light mode state and a toggle action to the entire tree.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React, {
   createContext,
   useContext,
@@ -13,8 +8,7 @@ import React, {
 import { ThemeColors, ThemeMode } from '../types';
 import { lightColors, darkColors } from '../utils/theme';
 
-// ─── Context shape ────────────────────────────────────────────────────────────
-
+// context shape 
 interface ThemeContextValue {
   mode:        ThemeMode;
   colors:      ThemeColors;
@@ -22,12 +16,10 @@ interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
-
+// context 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-// ─── Provider ─────────────────────────────────────────────────────────────────
-
+// provider 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<ThemeMode>('light');
 
@@ -47,12 +39,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
-/**
- * Returns the current theme context value.
- * Must be called inside a component wrapped by <ThemeProvider>.
- */
+// hook 
 export const useTheme = (): ThemeContextValue => {
   const ctx = useContext(ThemeContext);
   if (!ctx) {

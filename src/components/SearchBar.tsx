@@ -1,23 +1,17 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// components/SearchBar.tsx
-// Controlled search input with a clear button and themed colours.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, Text, Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { styles } from '../styles/SearchBar.styles';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// props 
 interface SearchBarProps {
   value:          string;
   onChangeText:   (text: string) => void;
   placeholder?:   string;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
+// component 
 const SearchBar = ({
   value,
   onChangeText,
@@ -36,7 +30,7 @@ const SearchBar = ({
           },
         ]}
       >
-        <Text style={styles.searchIcon}>🔍</Text>
+        <Feather name="search" size={16} color={colors.textMuted} style={styles.searchIcon} />
 
         <TextInput
           style={[styles.input, { color: colors.text }]}
@@ -51,13 +45,13 @@ const SearchBar = ({
         />
 
         {value.length > 0 && (
-          <TouchableOpacity
+          <Pressable
             onPress={() => onChangeText('')}
             accessibilityLabel="Clear search"
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Text style={[styles.clearBtn, { color: colors.textMuted }]}>✕</Text>
-          </TouchableOpacity>
+            <Feather name="x-circle" size={16} color={colors.textMuted} />
+          </Pressable>
         )}
       </View>
     </View>

@@ -1,18 +1,8 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// screens/JobFinderScreen.tsx
-// Main screen: fetches jobs from the API, supports search filtering,
-// and lets users save or apply for any listing.
-// ─────────────────────────────────────────────────────────────────────────────
-
-import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useRef } from 'react';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation, useScrollToTop } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Job, RootStackParamList } from '../types';
@@ -29,19 +19,22 @@ import { styles } from '../styles/JobFinderScreen.styles';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
+// components for the job finder screen
 const JobFinderScreen = () => {
   const { colors }                       = useTheme();
   const navigation                       = useNavigation<Nav>();
   const { jobs, isLoading, error, refetch } = useJobFetcher();
   const { query, setQuery, filteredJobs }   = useJobSearch(jobs);
+  const listRef = useRef<FlatList<Job> | null>(null);
+  useScrollToTop(listRef as any);
 
+  // apply for the job
   const handleApply = (job: Job) => {
+    // navigate to the application form screen
     navigation.navigate('ApplicationForm', { job, fromSavedJobs: false });
   };
 
-  // ── Loading ───────────────────────────────────────────────────────────────
+  // loads the jobs from the job finder screen
   if (isLoading) {
     return (
       <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]}>
@@ -56,13 +49,13 @@ const JobFinderScreen = () => {
     );
   }
 
-  // ── Error ─────────────────────────────────────────────────────────────────
+  // errors loading the jobs from the job finder screen
   if (error) {
     return (
       <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]}>
         <ScreenHeader colors={colors} />
         <EmptyState
-          icon="⚠️"
+          icon="alert-triangle"
           title="Couldn't load jobs"
           subtitle={error}
           actionLabel="Try Again"
@@ -72,7 +65,7 @@ const JobFinderScreen = () => {
     );
   }
 
-  // ── Main content ──────────────────────────────────────────────────────────
+  // content of the job finder screen
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]}>
       <ScreenHeader colors={colors} />
@@ -86,11 +79,19 @@ const JobFinderScreen = () => {
           {query.trim() ? ` for "${query.trim()}"` : ''}
         </Text>
 
+        {/* list of jobs found */}
         <FlatList
+          ref={listRef}
           data={filteredJobs}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <JobCard job={item} onApply={handleApply} />
+            <JobCard
+              job={item}
+              onApply={handleApply}
+              onPress={(job) =>
+                navigation.navigate('JobDetails', { job })
+              }
+            />
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={
@@ -98,9 +99,11 @@ const JobFinderScreen = () => {
               ? styles.emptyListContent
               : styles.listContent
           }
+
+          // empty state (no jobs found)
           ListEmptyComponent={
             <EmptyState
-              icon="🔍"
+              icon="search"
               title="No jobs found"
               subtitle={
                 query.trim()
@@ -117,32 +120,34 @@ const JobFinderScreen = () => {
   );
 };
 
-// ─── Screen header (extracted to avoid repetition inside conditionals) ────────
-
+// screen header for the job finder screen
 interface HeaderProps {
   colors: ReturnType<typeof useTheme>['colors'];
 }
 
-const ScreenHeader = ({ colors }: HeaderProps) => (
-  <View
-    style={[
-      styles.headerBar,
-      {
-        backgroundColor:  colors.surface,
-        borderBottomColor: colors.border,
-      },
-    ]}
-  >
-    <View>
-      <Text style={[styles.headerTitle, { color: colors.text }]}>
-        Job Finder
-      </Text>
-      <Text style={[styles.headerSubtitle, { color: colors.textMuted }]}>
-        Find your dream career
-      </Text>
+const ScreenHeader = ({ colors }: HeaderProps) => {
+  const insets = useSafeAreaInsets();
+  return (
+    <View
+      style={[
+        styles.headerBar,
+        {
+          backgroundColor:   colors.surface,
+          borderBottomColor: colors.border,
+        },
+      ]}
+    >
+      <View>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
+          Job Finder
+        </Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textMuted }]}>
+          Find your dream career
+        </Text>
+      </View>
+      <ThemeToggle />
     </View>
-    <ThemeToggle />
-  </View>
-);
+  );
+};
 
 export default JobFinderScreen;

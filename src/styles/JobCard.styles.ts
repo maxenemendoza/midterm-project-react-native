@@ -1,11 +1,7 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// styles/JobCard.styles.ts
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  // ── Card wrapper ────────────────────────────────────────────────────────
+  // card wrapper
   card: {
     borderRadius: 16,
     borderWidth: 1,
@@ -17,7 +13,7 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  // ── Header row ──────────────────────────────────────────────────────────
+  // header row
   header: {
     flexDirection: 'row',
     marginBottom: 12,
@@ -26,6 +22,12 @@ export const styles = StyleSheet.create({
   },
   avatarWrapper: {
     flexShrink: 0,
+  },
+  companyLogo: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
   },
   avatar: {
     width: 48,
@@ -53,7 +55,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // ── Tags row ────────────────────────────────────────────────────────────
+  // tags row
   tags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -77,7 +79,7 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // ── Salary band ─────────────────────────────────────────────────────────
+  // salary band
   salaryBand: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -95,14 +97,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // ── Description preview ─────────────────────────────────────────────────
-  description: {
-    fontSize: 13,
-    lineHeight: 19,
-    marginBottom: 14,
-  },
-
-  // ── Action buttons ──────────────────────────────────────────────────────
+  // action buttons
   actions: {
     flexDirection: 'row',
     gap: 8,

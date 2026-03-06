@@ -1,37 +1,32 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// components/EmptyState.tsx
-// Centred placeholder shown when a list is empty or an error has occurred.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { styles } from '../styles/EmptyState.styles';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// props 
 interface EmptyStateProps {
-  icon:          string;
+  icon?:         string;
   title:         string;
   subtitle?:     string;
   actionLabel?:  string;
   onAction?:     () => void;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-const EmptyState = ({
-  icon,
-  title,
-  subtitle,
-  actionLabel,
-  onAction,
-}: EmptyStateProps) => {
+// component
+const EmptyState = ({ icon, title, subtitle, actionLabel, onAction, }: EmptyStateProps) => {
   const { colors } = useTheme();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>{icon}</Text>
+      {icon && (
+        <Feather
+          name={icon as any}
+          size={40}
+          color={colors.textMuted}
+          style={styles.icon}
+        />
+      )}
 
       <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
 
@@ -42,15 +37,14 @@ const EmptyState = ({
       )}
 
       {actionLabel && onAction && (
-        <TouchableOpacity
+        <Pressable
           style={[styles.actionBtn, { backgroundColor: colors.primary }]}
           onPress={onAction}
-          activeOpacity={0.8}
         >
           <Text style={[styles.actionBtnText, { color: colors.primaryText }]}>
             {actionLabel}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   );

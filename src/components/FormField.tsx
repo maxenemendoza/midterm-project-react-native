@@ -1,35 +1,16 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// components/FormField.tsx
-// Reusable labelled text-input with inline validation-error display.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TextInputProps,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, TextInput, TextInputProps, StyleSheet, } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// props
 interface FormFieldProps extends TextInputProps {
   label:     string;
   error?:    string;
   required?: boolean;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-const FormField = ({
-  label,
-  error,
-  required = false,
-  style,
-  ...rest
-}: FormFieldProps) => {
+// component 
+const FormField = ({ label, error, required = false, style, ...rest }: FormFieldProps) => {
   const { colors } = useTheme();
   const hasError   = Boolean(error);
 
@@ -39,7 +20,7 @@ const FormField = ({
     // overlaps / blocks touches on it.
     <View style={styles.container}>
 
-      {/* ── Label ──────────────────────────────────────────────────────── */}
+      {/* label */}
       <View style={styles.labelRow}>
         <Text style={[styles.label, { color: colors.text }]}>
           {label}
@@ -49,7 +30,7 @@ const FormField = ({
         )}
       </View>
 
-      {/* ── Input ──────────────────────────────────────────────────────── */}
+      {/* input */}
       <TextInput
         style={[
           styles.input,
@@ -63,12 +44,12 @@ const FormField = ({
         placeholderTextColor={colors.placeholder}
         accessibilityLabel={label}
         accessibilityHint={required ? 'Required field' : undefined}
-        // Never set editable={false} here — the field must stay interactive
+        // never set editable={false} here — the field must stay interactive
         // even when there is an error so the user can correct their input.
         {...rest}
       />
 
-      {/* ── Error row — rendered in normal flow, BELOW the input ───────── */}
+      {/* ── error row — rendered in normal flow, BELOW the input ───────── */}
       {hasError && (
         <View style={styles.errorRow} accessibilityRole="alert">
           <Text style={[styles.errorIcon, { color: colors.error }]}>⚠</Text>
@@ -81,17 +62,17 @@ const FormField = ({
   );
 };
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-// Kept here (co-located) so it is trivially obvious there is no
+// styles 
+// kept here (co-located) so it is trivially obvious there is no
 // position:'absolute' that could cause the error to float over the input.
 
 const styles = StyleSheet.create({
-  // Outer wrapper — natural flow, no absolute children
+  // outer wrapper — natural flow, no absolute children
   container: {
     marginBottom: 16,
   },
 
-  // Label row
+  // label row
   labelRow: {
     flexDirection: 'row',
     alignItems:    'center',
@@ -108,18 +89,18 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  // Text input
+  // text input
   input: {
     borderWidth:   1.5,
     borderRadius:  10,
     paddingHorizontal: 14,
     paddingVertical:   12,
     fontSize:      15,
-    // Do NOT set a fixed height here — multiline inputs need room to grow.
-    // The caller passes `style={styles.textArea}` (with minHeight) if needed.
+    // do NOT set a fixed height here — multiline inputs need room to grow.
+    // the caller passes `style={styles.textArea}` (with minHeight) if needed.
   },
 
-  // Error row — sits in normal flow immediately below the input
+  // error row — sits in normal flow immediately below the input
   errorRow: {
     flexDirection: 'row',
     alignItems:    'flex-start',

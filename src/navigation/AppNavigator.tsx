@@ -1,16 +1,6 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// navigation/AppNavigator.tsx
-//
-// Navigation tree:
-//   Stack (RootStack)
-//   └── Tabs (BottomTabs)
-//       ├── JobFinder   → JobFinderScreen
-//       └── SavedJobs   → SavedJobsScreen
-//   └── ApplicationForm → ApplicationFormScreen  (modal-style slide-from-bottom)
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
 import { Text } from 'react-native';
+import { Feather, Bookmark } from '@expo/vector-icons';
 import { NavigationContainer }         from '@react-navigation/native';
 import { createNativeStackNavigator }  from '@react-navigation/native-stack';
 import { createBottomTabNavigator }    from '@react-navigation/bottom-tabs';
@@ -22,14 +12,13 @@ import { useJobs }  from '../context/JobsContext';
 import JobFinderScreen        from '../screens/JobFinderScreen';
 import SavedJobsScreen        from '../screens/SavedJobsScreen';
 import ApplicationFormScreen  from '../screens/ApplicationFormScreen';
+import JobDetailsScreen       from '../screens/JobDetailsScreen';
 
-// ─── Navigator instances ──────────────────────────────────────────────────────
-
+// navigator instances 
 const Tab   = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// ─── Bottom tab navigator ─────────────────────────────────────────────────────
-
+// bottom tab navigator 
 const TabNavigator = () => {
   const { colors } = useTheme();
   const { savedJobs } = useJobs();
@@ -61,7 +50,7 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: 'Find Jobs',
           tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 22, color }}>🔍</Text>
+            <Feather name="search" size={20} color={color} />
           ),
         }}
       />
@@ -71,7 +60,7 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: 'Saved',
           tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 22, color }}>🔖</Text>
+            <Feather name="bookmark" size={20} color={color} />
           ),
           tabBarBadge:      savedJobs.length > 0 ? savedJobs.length : undefined,
           tabBarBadgeStyle: { backgroundColor: colors.primary, color: '#FFF', fontSize: 10 },
@@ -81,8 +70,7 @@ const TabNavigator = () => {
   );
 };
 
-// ─── Root stack navigator ─────────────────────────────────────────────────────
-
+// root stack navigator 
 const AppNavigator = () => {
   const { colors } = useTheme();
 
@@ -103,6 +91,11 @@ const AppNavigator = () => {
           name="ApplicationForm"
           component={ApplicationFormScreen}
           options={{ animation: 'slide_from_bottom' }}
+        />
+        <Stack.Screen
+          name="JobDetails"
+          component={JobDetailsScreen}
+          options={{ animation: 'slide_from_right' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

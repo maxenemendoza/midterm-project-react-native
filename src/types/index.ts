@@ -1,14 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// types/index.ts
-// Central type definitions for the Job Finder application.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─── Job ─────────────────────────────────────────────────────────────────────
-
-/**
- * Normalised Job object used throughout the app.
- * UUIDs are assigned at fetch time; they are not provided by the API.
- */
 export interface Job {
   id: string;
   title: string;
@@ -19,6 +8,7 @@ export interface Job {
   description: string;
   requirements: string[];
   benefits: string[];
+  logoUrl?: string;
   applicationUrl?: string;
   publishedAt?: string;
   expiresAt?: string;
@@ -26,13 +16,14 @@ export interface Job {
   category?: string;
 }
 
-/**
- * Raw shape returned by the Empllo API before normalisation.
- * Fields are optional because the API shape is not guaranteed.
- */
+// raw job shape returned by the Empllo API before normalisation
+// fields are optional because the API shape is not guaranteed
 export interface RawJob {
   title?: string;
   companyName?: string;
+  logo?: string;
+  companyLogo?: string;
+  companyLogoUrl?: string;
   location?: string;
   minSalary?: number | string;
   maxSalary?: number | string;
@@ -50,9 +41,9 @@ export interface RawJob {
   [key: string]: unknown;
 }
 
-// ─── Application Form ─────────────────────────────────────────────────────────
+// application form
 
-/** Values held in the application form state. */
+// application form values held in the application form state
 export interface ApplicationForm {
   name: string;
   email: string;
@@ -60,7 +51,7 @@ export interface ApplicationForm {
   whyHireYou: string;
 }
 
-/** Per-field validation error messages. */
+// application form errors per-field validation error messages
 export interface ApplicationFormErrors {
   name?: string;
   email?: string;
@@ -68,28 +59,30 @@ export interface ApplicationFormErrors {
   whyHireYou?: string;
 }
 
-// ─── Navigation ───────────────────────────────────────────────────────────────
+// navigation param lists
 
-/** Bottom-tab param list. */
+// bottom-tab param list
 export type RootTabParamList = {
   JobFinder: undefined;
   SavedJobs: undefined;
 };
 
-/** Root stack param list. */
+// root stack param list
 export type RootStackParamList = {
   Tabs: undefined;
   ApplicationForm: {
     job: Job;
     fromSavedJobs: boolean;
   };
+  JobDetails: {
+    job: Job;
+  };
 };
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
-
+// theme mode 
 export type ThemeMode = 'light' | 'dark';
 
-/** Complete set of semantic colour tokens used across the app. */
+// theme colors  
 export interface ThemeColors {
   background: string;
   surface: string;

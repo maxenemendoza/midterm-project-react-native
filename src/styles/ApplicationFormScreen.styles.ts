@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// styles/ApplicationFormScreen.styles.ts
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -12,12 +8,12 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // ── Custom header ────────────────────────────────────────────────────────
+  // header 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     gap: 8,
   },
@@ -39,16 +35,16 @@ export const styles = StyleSheet.create({
   },
   headerSub: {
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 4,
   },
 
-  // ── Scroll container ─────────────────────────────────────────────────────
+  // Scroll container 
   scrollContent: {
     padding: 16,
     paddingBottom: 44,
   },
 
-  // ── Job summary card ─────────────────────────────────────────────────────
+  // Job summary card 
   jobCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -57,6 +53,19 @@ export const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 22,
     gap: 12,
+  },
+  jobCardBadge: {
+    width: 46,
+    height: 46,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  jobCardBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
   },
   jobCardAvatar: {
     width: 46,
@@ -88,28 +97,33 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  // ── Section heading ──────────────────────────────────────────────────────
+  // Section heading 
   sectionTitle: {
     fontSize: 17,
     fontWeight: '700',
     marginBottom: 18,
   },
 
-  // ── Multi-line input override ────────────────────────────────────────────
+  // Multi-line input override 
   textArea: {
     minHeight: 120,
     paddingTop: 12,
   },
 
-  // ── Helper note ──────────────────────────────────────────────────────────
+  // Helper note 
   note: {
     fontSize: 12,
     marginTop: -6,
-    marginBottom: 22,
+    marginBottom: 10,
     lineHeight: 17,
   },
 
-  // ── Submit button ────────────────────────────────────────────────────────
+  wordCount: {
+    fontSize: 12,
+    marginBottom: 22,
+  },
+
+  // Submit button 
   submitBtn: {
     borderRadius: 12,
     paddingVertical: 16,
@@ -122,7 +136,7 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
-  // ── Success modal ────────────────────────────────────────────────────────
+  // Success modal
   modalOverlay: {
     flex: 1,
     alignItems: 'center',
@@ -137,7 +151,7 @@ export const styles = StyleSheet.create({
     padding: 30,
     alignItems: 'center',
   },
-  successEmoji: {
+  successIcon: {
     fontSize: 54,
     marginBottom: 14,
   },
@@ -155,6 +169,10 @@ export const styles = StyleSheet.create({
   },
   successHighlight: {
     fontWeight: '700',
+  },
+  submitBar: {
+    padding: 16,
+    borderTopWidth: 1,
   },
   okBtn: {
     width: '100%',

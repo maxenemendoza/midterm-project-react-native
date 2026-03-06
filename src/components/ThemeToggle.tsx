@@ -1,10 +1,6 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// components/ThemeToggle.tsx
-// A pill-shaped button in the header that switches between dark and light mode.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { styles } from '../styles/ThemeToggle.styles';
 
@@ -12,7 +8,7 @@ const ThemeToggle = () => {
   const { isDark, toggleTheme, colors } = useTheme();
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={toggleTheme}
       style={[
         styles.container,
@@ -23,20 +19,13 @@ const ThemeToggle = () => {
       ]}
       accessibilityLabel={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       accessibilityRole="button"
-      activeOpacity={0.75}
     >
-      <View style={styles.row}>
-        <Text style={styles.icon}>{isDark ? '☀️' : '🌙'}</Text>
-        <Text
-          style={[
-            styles.label,
-            { color: isDark ? colors.primaryText : colors.primary },
-          ]}
-        >
-          {isDark ? 'Light' : 'Dark'}
-        </Text>
-      </View>
-    </TouchableOpacity>
+      <Feather
+        name={isDark ? 'sun' : 'moon'}
+        size={18}
+        color={isDark ? colors.primaryText : colors.primary}
+      />
+    </Pressable>
   );
 };
 

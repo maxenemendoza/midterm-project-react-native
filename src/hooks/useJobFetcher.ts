@@ -1,14 +1,8 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// hooks/useJobFetcher.ts
-// Encapsulates API fetching, loading state, error state, and manual refetch.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { useState, useEffect, useCallback } from 'react';
 import { Job } from '../types';
 import { fetchJobs } from '../services/jobApi';
 
-// ─── Return type ──────────────────────────────────────────────────────────────
-
+// return type 
 interface UseJobFetcherReturn {
   jobs:      Job[];
   isLoading: boolean;
@@ -16,12 +10,7 @@ interface UseJobFetcherReturn {
   refetch:   () => void;
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
-/**
- * Fetches jobs from the Empllo API on mount and exposes the result along with
- * loading / error state and a `refetch` callback for manual retry.
- */
+// hook 
 export const useJobFetcher = (): UseJobFetcherReturn => {
   const [jobs, setJobs]           = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(false);

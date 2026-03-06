@@ -1,16 +1,10 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// services/jobApi.ts
-// Fetches jobs from the Empllo public API and returns normalised Job objects.
-// Each job is assigned a UUID because the API provides no unique identifiers.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import uuid from 'react-native-uuid';
 import { Job, RawJob } from '../types';
 import { mapRawJobToJob } from '../utils/formatters';
 
 const BASE_URL = 'https://empllo.com/api/v1';
 
-/** Shape of the top-level API response (various possible wrappers). */
+// shape of the top-level API response (various possible wrappers)
 interface ApiResponse {
   jobs?:    RawJob[];
   data?:    RawJob[];
@@ -18,20 +12,16 @@ interface ApiResponse {
   [key: string]: unknown;
 }
 
-// ─── fetchJobs ────────────────────────────────────────────────────────────────
+// fetchJobs 
+// handles multiple possible response shapes:
+//   • Bare array
+//   • { jobs: [...] }
+//   • { data: [...] }
+//   • { results: [...] }
+//   • Any object whose first array-valued property is used as fallback
+// throws a descriptive Error on network failure, bad status, or empty results
 
-/**
- * Fetches the full job list from the Empllo API.
- *
- * Handles multiple possible response shapes:
- *   • Bare array
- *   • { jobs: [...] }
- *   • { data: [...] }
- *   • { results: [...] }
- *   • Any object whose first array-valued property is used as fallback
- *
- * Throws a descriptive Error on network failure, bad status, or empty results.
- */
+// fetches the full job list from the Empllo API
 export const fetchJobs = async (): Promise<Job[]> => {
   const response = await fetch(BASE_URL, {
     method: 'GET',
@@ -49,7 +39,7 @@ export const fetchJobs = async (): Promise<Job[]> => {
 
   const data: ApiResponse = await response.json();
 
-  // ── Locate the jobs array inside whatever shape the API returned ────────
+  // locates the jobs array inside whatever shape the API returned 
   let rawJobs: RawJob[] = [];
 
   if (Array.isArray(data)) {
@@ -61,7 +51,7 @@ export const fetchJobs = async (): Promise<Job[]> => {
   } else if (Array.isArray(data.results)) {
     rawJobs = data.results;
   } else {
-    // Fallback: find the first array-valued property
+    // fallback: find the first array-valued property
     const firstArray = Object.values(data).find((v) => Array.isArray(v));
     if (firstArray) {
       rawJobs = firstArray as RawJob[];
@@ -74,6 +64,6 @@ export const fetchJobs = async (): Promise<Job[]> => {
     );
   }
 
-  // ── Assign a unique UUID to each job ────────────────────────────────────
+  // assigns a unique id to each job using uuid 
   return rawJobs.map((raw) => mapRawJobToJob(raw, uuid.v4() as string));
 };

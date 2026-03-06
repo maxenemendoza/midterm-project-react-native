@@ -1,16 +1,6 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// utils/formatters.ts
-// Data-transformation helpers that convert raw API shapes to clean app types.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { RawJob, Job } from '../types';
 
-// ─── Salary ───────────────────────────────────────────────────────────────────
-
-/**
- * Derives a human-readable salary string from a RawJob.
- * Priority: salary string → min/max range → "Salary not specified".
- */
+// salary 
 export const formatSalary = (raw: RawJob): string => {
   if (raw.salary && typeof raw.salary === 'string' && raw.salary.trim()) {
     return raw.salary.trim();
@@ -24,12 +14,7 @@ export const formatSalary = (raw: RawJob): string => {
   return 'Salary not specified';
 };
 
-// ─── String | string[] ────────────────────────────────────────────────────────
-
-/**
- * Normalises a value that may be a plain string (newline/comma/bullet delimited)
- * or already an array, into a clean string[].
- */
+// string
 export const parseStringOrArray = (
   value: string | string[] | undefined
 ): string[] => {
@@ -41,25 +26,28 @@ export const parseStringOrArray = (
     .filter((s) => s.length > 0);
 };
 
-// ─── RawJob → Job ─────────────────────────────────────────────────────────────
+// rawjob to job
+export const mapRawJobToJob = (raw: RawJob, id: string): Job => {
+  const logoUrl =
+    (raw.companyLogoUrl as string | undefined) ||
+    (raw.companyLogo as string | undefined) ||
+    (raw.logo as string | undefined);
 
-/**
- * Maps a raw API job object to the normalised Job interface.
- * The caller is responsible for supplying a pre-generated UUID as `id`.
- */
-export const mapRawJobToJob = (raw: RawJob, id: string): Job => ({
-  id,
-  title:       String(raw.title       ?? 'Untitled Position'),
-  companyName: String(raw.companyName ?? 'Unknown Company'),
-  location:    String(raw.location    ?? 'Remote / Not specified'),
-  salary:      formatSalary(raw),
-  jobType:     String(raw.jobType ?? raw.employmentType ?? 'Not specified'),
-  description: String(raw.description ?? 'No description provided.'),
-  requirements: parseStringOrArray(raw.requirements as string | string[]),
-  benefits:     parseStringOrArray(raw.benefits     as string | string[]),
-  applicationUrl: raw.applicationUrl as string | undefined,
-  publishedAt:    raw.publishedAt    as string | undefined,
-  expiresAt:      raw.expiresAt      as string | undefined,
-  remote:         Boolean(raw.remote),
-  category:       raw.category as string | undefined,
-});
+  return {
+    id,
+    title:       String(raw.title       ?? 'Untitled Position'),
+    companyName: String(raw.companyName ?? 'Unknown Company'),
+    location:    String(raw.location    ?? 'Remote / Not specified'),
+    salary:      formatSalary(raw),
+    jobType:     String(raw.jobType ?? raw.employmentType ?? 'Not specified'),
+    description: String(raw.description ?? 'No description provided.'),
+    requirements: parseStringOrArray(raw.requirements as string | string[]),
+    benefits:     parseStringOrArray(raw.benefits     as string | string[]),
+    applicationUrl: raw.applicationUrl as string | undefined,
+    publishedAt:    raw.publishedAt    as string | undefined,
+    expiresAt:      raw.expiresAt      as string | undefined,
+    remote:         Boolean(raw.remote),
+    category:       raw.category as string | undefined,
+    logoUrl,
+  };
+};
